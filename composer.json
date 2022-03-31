@@ -1,0 +1,13 @@
+{
+    "name": "private_files_adapter",
+    "type": "drupal-module",
+    "description": "My Awesome Module",
+    "keywords": [
+    ],
+    "homepage": "https://www.drupal.org/project/private_files_adapter",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/private_files_adapter",
+        "source": "http://cgit.drupalcode.org/private_files_adapter",
+    },
+}

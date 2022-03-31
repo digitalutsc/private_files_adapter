@@ -1,0 +1,63 @@
+<?php
+
+/**
+ * @file
+ * Contains private_files_adapter.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Component\Utility\UrlHelper;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Access\AccessResultInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
+/**
+ * Implements hook_help().
+ */
+function private_files_adapter_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the private_files_adapter module.
+    case 'help.page.private_files_adapter':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('My Awesome Module') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function private_files_adapter_theme() {
+  return [
+    'private_files_adapter' => [
+      'render element' => 'children',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_access().
+ */
+function private_files_adapter_file_access(EntityInterface $entity, string $operation, AccountInterface $account): AccessResultInterface
+{
+    // Handles only download operation of private file or image.
+
+    if (strpos($_SERVER['HTTP_USER_AGENT'], "Cantaloupe") !== false
+        && !empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])
+        && !empty($_SERVER['HTTP_USER']) && $_SERVER['HTTP_USER'] > 0) {
+        $account = \Drupal\user\Entity\User::load($_SERVER['HTTP_USER']);
+        if (isset($account)){
+            return AccessResult::allowed();
+        }
+        else {
+            return AccessResult::neutral();
+        }
+    }
+    else {
+        return AccessResult::neutral();
+    }
+}
