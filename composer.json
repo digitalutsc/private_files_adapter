@@ -4,6 +4,7 @@
     "description": "This module override access control for private file system with Cantaloupe",
     "keywords": [
     ],
+    "license": "GPL-3.0-only",
     "homepage": "https://www.drupal.org/project/private_files_adapter",
     "minimum-stability": "dev",
     "support": {
