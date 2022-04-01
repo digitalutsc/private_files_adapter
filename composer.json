@@ -1,5 +1,5 @@
 {
-    "name": "private_files_adapter",
+    "name": "digitalutsc/private_files_adapter",
     "type": "drupal-module",
     "description": "This module override access control for private file system with Cantaloupe",
     "keywords": [
