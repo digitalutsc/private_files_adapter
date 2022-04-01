@@ -6,6 +6,16 @@
 git clone -b islandora_lite https://github.com/digitalutsc/islandora-playbook.git islandora-lite-playbook
 ````
 
+## Apply a patch for Openseadragon Viewer
+
+* Openseadragon Viewer module: https://github.com/Islandora/openseadragon
+* Run the following commands: 
+
+````  
+cd /var/www/html/drupal/web/modules/contrib/openseadragon  
+wget https://raw.githubusercontent.com/digitalutsc/private_files_adapter/main/scripts/openseadragon.authentication.patch
+patch -p1 < openseadragon.authentication.patch
+````
 
 ## How to adjust Cantaloupe in Islandora Lite Playbook
 
