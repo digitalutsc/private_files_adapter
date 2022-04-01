@@ -8,7 +8,7 @@
     "minimum-stability": "dev",
     "support": {
         "issues": "https://www.drupal.org/project/issues/private_files_adapter",
-        "source": "http://cgit.drupalcode.org/private_files_adapter",
+        "source": "http://cgit.drupalcode.org/private_files_adapter"
     },
      "repositories": {
         "drupal": {
