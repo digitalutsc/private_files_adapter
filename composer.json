@@ -1,7 +1,7 @@
 {
     "name": "private_files_adapter",
     "type": "drupal-module",
-    "description": "My Awesome Module",
+    "description": "This module override access control for private file system with Cantaloupe",
     "keywords": [
     ],
     "homepage": "https://www.drupal.org/project/private_files_adapter",
@@ -10,4 +10,37 @@
         "issues": "https://www.drupal.org/project/issues/private_files_adapter",
         "source": "http://cgit.drupalcode.org/private_files_adapter",
     },
+     "repositories": {
+        "drupal": {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        }
+    },
+    "require": {
+        "drupal/jwt": "^1.0@RC",
+    },
+    "authors": [
+        {
+            "name": "The University of Toronto Scarborough Library's Digital Scholarship Unit (DSU)",
+            "email": "digitalscholarship@utsc.utoronto.ca",
+            "role": "Owner"
+        },
+        {
+            "name": "Kyle Huynh",
+            "email": "kyle.huynh205@gmail.com",
+            "role": "Maintainer"
+        }
+    ],
+    "scripts": {
+        "post-install-cmd": [
+            "./vendor/bin/phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer"
+        ],
+        "post-update-cmd": [
+            "./vendor/bin/phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer"
+        ],
+        "check": [
+            "./vendor/bin/phpcs --standard=Drupal --ignore=*.md,vendor --extensions=php,module,inc,install,test,profile,theme,css,info .",
+            "./vendor/bin/phpcpd --names='*.module,*.inc,*.test,*.php' --exclude=vendor ."
+        ]
+    }
 }
