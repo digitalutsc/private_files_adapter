@@ -17,7 +17,7 @@
         }
     },
     "require": {
-        "drupal/jwt": "^1.0@RC",
+        "drupal/jwt": "^1.0@RC"
     },
     "authors": [
         {
