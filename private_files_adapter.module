@@ -12,6 +12,10 @@ use Drupal\Core\Access\AccessResultInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\jwt\Authentication\Provider\JwtAuth;
+use Drupal\jwt\Authentication\Event\JwtAuthValidateEvent;
+use Drupal\jwt\Transcoder\JwtDecodeException;
+
 /**
  * Implements hook_help().
  */
@@ -44,16 +48,30 @@ function private_files_adapter_theme() {
  */
 function private_files_adapter_file_access(EntityInterface $entity, string $operation, AccountInterface $account): AccessResultInterface
 {
-    // Handles only download operation of private file or image.
+    $request = \Drupal::request();
+    if (strpos($request->server->get('HTTP_USER_AGENT'), "Cantaloupe") !== false
+        && !empty($request->server->get('HTTP_AUTHORIZATION'))) {
 
-    if (strpos($_SERVER['HTTP_USER_AGENT'], "Cantaloupe") !== false
-        && !empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])
-        && !empty($_SERVER['HTTP_USER']) && $_SERVER['HTTP_USER'] > 0) {
-        $account = \Drupal\user\Entity\User::load($_SERVER['HTTP_USER']);
-        if (isset($account)){
-            return AccessResult::allowed();
+        // Handles only download operation of private file or image.
+        $raw_jwt = str_replace("Bearer ", "" , $request->server->get('HTTP_AUTHORIZATION'));
+        // Decode JWT and validate signature.
+        try {
+            $transcoder = \Drupal::service('jwt.transcoder');
+            $authed_userid = $transcoder->decode($raw_jwt)->getClaim(['drupal', 'uid']);
+
+            if (empty($authed_userid)){
+                return AccessResult::neutral();
+            }
+            $account = \Drupal\user\Entity\User::load($authed_userid);
+            if (isset($account)){
+                // TODO: add check the account with access control with Group
+                return AccessResult::allowed();
+            }
+            else {
+                return AccessResult::neutral();
+            }
         }
-        else {
+        catch (JwtDecodeException $e) {
             return AccessResult::neutral();
         }
     }
