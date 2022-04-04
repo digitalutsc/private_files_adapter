@@ -191,18 +191,17 @@ class CustomDelegate
   def httpsource_resource_info(options = {})
       identifier = context['identifier']
       @header = context['request_headers']
-      @token = Base64.encode64(@header["user"])
 
       #logger = Java::edu.illinois.library.cantaloupe.script.Logger
-      #logger.info "========================================="
       #logger.info 'httpsource_resource_info'
       #logger.info identifier
-      #logger.info @header["user"]
-      #logger.info @token
+      #logger.info @header
       #logger.info "========================================="
+      #logger.info @header['token']
+      #logger.info "========================================="
+      #logger.info @token
 
-      uri = {'uri' => identifier }
-      uri['headers'] = {'Authorization' => 'Bearer ' + @token, "user" => @header["user"]}
+      uri = {'uri' => identifier, 'headers' => {'Authorization' => @header['token'] } }
       return uri
   end
 
