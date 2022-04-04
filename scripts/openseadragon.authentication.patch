@@ -1,5 +1,5 @@
 diff --git a/openseadragon.module b/openseadragon.module
-index 62d1ff9..a2698ce 100644
+index 62d1ff9..39fc716 100644
 --- a/openseadragon.module
 +++ b/openseadragon.module
 @@ -79,6 +79,11 @@ function template_preprocess_openseadragon_formatter(&$variables) {
@@ -10,7 +10,7 @@ index 62d1ff9..a2698ce 100644
 +          // for dsu-utsc
 +         'loadTilesWithAjax' => TRUE,
 +         'ajaxWithCredentials' => TRUE,
-+         'ajaxHeaders' => ["Authorization" => "Bearer " . \Drupal::service('jwt.authentication.jwt')->generateToken(), "user" => \Drupal::currentUser()->id() ],
++         'ajaxHeaders' => ["Authorization" => "Bearer " . \Drupal::service('jwt.authentication.jwt')->generateToken(), 'token' => \Drupal::service('jwt.authentication.jwt')->generateToken() ],
        ] + $viewer_settings,
      ];
  
@@ -22,6 +22,7 @@ index 62d1ff9..a2698ce 100644
 +        // for dsu-utsc
 +        'loadTilesWithAjax' => TRUE,
 +        'ajaxWithCredentials' => TRUE,
-+        'ajaxHeaders' => ["Authorization" => "Bearer " . \Drupal::service('jwt.authentication.jwt')->generateToken(), "user" => \Drupal::currentUser()->id() ],
++        'ajaxHeaders' => ["Authorization" => "Bearer " . \Drupal::service('jwt.authentication.jwt')->generateToken(), 'token' => \Drupal::service('jwt.authentication.jwt')->generateToken() ],
        ] + $viewer_settings,
      ];
+ 
