@@ -15,6 +15,8 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\jwt\Authentication\Provider\JwtAuth;
 use Drupal\jwt\Authentication\Event\JwtAuthValidateEvent;
 use Drupal\jwt\Transcoder\JwtDecodeException;
+use Drupal\group\Entity\GroupContent;
+use Drupal\media\Entity\Media;
 
 /**
  * Implements hook_help().
@@ -49,6 +51,7 @@ function private_files_adapter_theme() {
 function private_files_adapter_file_access(EntityInterface $entity, string $operation, AccountInterface $account): AccessResultInterface
 {
     $request = \Drupal::request();
+
     if (strpos($request->server->get('HTTP_USER_AGENT'), "Cantaloupe") !== false
         && !empty($request->server->get('HTTP_AUTHORIZATION'))) {
 
@@ -62,10 +65,48 @@ function private_files_adapter_file_access(EntityInterface $entity, string $oper
             if (empty($authed_userid)){
                 return AccessResult::neutral();
             }
-            $account = \Drupal\user\Entity\User::load($authed_userid);
-            if (isset($account)){
-                // TODO: add check the account with access control with Group
-                return AccessResult::allowed();
+            $service_account = \Drupal\user\Entity\User::load($authed_userid);
+            if (isset($service_account)){
+                // add check the account with access control with Group
+                $operation = "view";
+
+                // get media from file
+                $media_id = array_keys(\Drupal::service('file.usage')->listUsage($entity)['file']['media'])[0];
+                $media = Media::load($media_id);
+
+                /** @var \Drupal\group\Plugin\GroupContentEnablerManagerInterface $plugin_manager */
+                $plugin_manager = \Drupal::service('plugin.manager.group_content_enabler');
+
+                $plugin_ids = $plugin_manager->getPluginIdsByEntityTypeAccess($media->getEntityTypeId());
+                $plugin_cache_tags = [];
+                foreach ($plugin_ids as $plugin_id) {
+                    $plugin_cache_tags[] = "group_content_list:plugin:$plugin_id";
+                }
+
+                // Load all of the group content for this entity.
+                $group_contents = GroupContent::loadByEntity($media);
+                if (!empty($group_contents) && count($group_contents) > 0) {
+                    $access = AccessResult::neutral();
+                    foreach ($plugin_ids as $plugin_id) {
+                        if (!$plugin_manager->hasHandler($plugin_id, 'access')) {
+                            continue;
+                        }
+                        $handler = $plugin_manager->getAccessControlHandler($plugin_id);
+                        $access = $access->orIf($handler->entityAccess($media, $operation, $service_account, TRUE));
+                    }
+                    $access
+                        ->addCacheTags($plugin_cache_tags)
+                        ->addCacheContexts(['user.group_permissions']);
+
+                    if ($access->isAllowed()) {
+                        return AccessResult::allowed();
+                    }
+                    else {
+                        return AccessResult::neutral();
+                    }
+                }else {
+                    return AccessResult::neutral();
+                }
             }
             else {
                 return AccessResult::neutral();
