@@ -1,6 +1,14 @@
 # Private Files Adapter
 
+Related issue: https://github.com/digitalutsc/islandora_group/issues/4
+
 ## Download Islandora Lite playbook: 
+
+````
+composer require digitalutsc/private_files_adapter
+````
+
+**OR**
 
 ````
 git clone -b islandora_lite https://github.com/digitalutsc/islandora-playbook.git islandora-lite-playbook
