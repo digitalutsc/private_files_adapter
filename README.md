@@ -52,3 +52,5 @@ sudo service tomcat9 restart
 git clone https://github.com/digitalutsc/private_files_adapter.git /var/www/html/drupal/web/modules/contrib/private_files_adapter
 drush en -y private_files_adapter
 ````
+
+## Create and set JWT keys
