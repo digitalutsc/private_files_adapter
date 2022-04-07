@@ -201,7 +201,11 @@ class CustomDelegate
       #logger.info "========================================="
       #logger.info @token
 
-      uri = {'uri' => identifier, 'headers' => {'Authorization' => @header['token'] } }
+      if @header['token']
+        uri = {'uri' => identifier, 'headers' => {'Authorization' => @header['token'] } }
+      else
+        uri = {'uri' => identifier }
+      end
       return uri
   end
 
