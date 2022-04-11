@@ -93,23 +93,55 @@ class CustomDelegate
   #  #@cookies = context['cookies']
   #  true
   #end
+  # The maximum scale allowed to unauthorized clients.
+  MAX_UNAUTHORIZED_R = Rational(1, 2)
+
   def authorize(options = {})
-      #logger = Java::edu.illinois.library.cantaloupe.script.Logger
+      logger = Java::edu.illinois.library.cantaloupe.script.Logger
+     @header = context['request_headers']
 
-      #identifier = context['identifier']
-      #logger.info identifier
 
-      #logger.info context['cookies']
+     header = context['request_headers']
+                       .select{ |name, value| name.downcase == 'authorization' }
+                       .values.first
 
-      # Allow only identifiers that don't include "_restricted"
-      #return !identifier.include?('_restricted')
-      # Allow only identifiers that start with "_public"
-      #return identifier.start_with?('public_')
-      # Allow only identifiers matching a regex
-      #return identifier.match(/^image[5-9][0-9]/)
-      true
-    end
+      if header&.start_with?('Bearer ')
+        token = header[7..header.length]
+          # Get the current scale constraint fraction, which ultimately comes
+          # from the identifier URI path component, which is conveniently
+          # made available for you in the delegate script context.
+          # This is a two-element array of numerator and denominator integers.
+          scale_constraint = context['scale_constraint']
 
+          # If it exists, convert it to a Rational (Ruby fraction).
+          # Otherwise, use 1/1.
+          scale_constraint_r = scale_constraint ?
+              Rational(*scale_constraint) : Rational(1)
+
+
+
+          # If the requested scale constraint is larger than authorized,
+          # redirect to the authorized scale constraint.
+          if scale_constraint_r > MAX_UNAUTHORIZED_R
+            return {
+                'status_code' => 302,
+                'scale_numerator' => MAX_UNAUTHORIZED_R.numerator,
+                'scale_denominator' => MAX_UNAUTHORIZED_R.denominator
+            }
+          else
+            logger.info "1~~~~~~~~~~~~~~~~~~~~~~~~~~`"
+            logger.info 'authorize'
+            logger.info "2~~~~~~~~~~~~~~~~~~~~~~~~~~`"
+            return true
+          end
+      end
+      return true
+  end
+
+
+  def valid?(token)
+      # check whether the token is valid and return true or false
+  end
   ##
   # Used to add additional keys to an information JSON response. See the
   # [Image API specification](http://iiif.io/api/image/2.1/#image-information).
@@ -192,17 +224,21 @@ class CustomDelegate
       identifier = context['identifier']
       @header = context['request_headers']
 
-      #logger = Java::edu.illinois.library.cantaloupe.script.Logger
+      logger = Java::edu.illinois.library.cantaloupe.script.Logger
       #logger.info 'httpsource_resource_info'
       #logger.info identifier
       #logger.info @header
-      #logger.info "========================================="
-      #logger.info @header['token']
-      #logger.info "========================================="
+      logger.info "1========================================="
+      logger.info @header['host']
+      logger.info @header['token']
+      logger.info @header['cookie']
+      logger.info "2========================================="
       #logger.info @token
 
       if @header['token']
         uri = {'uri' => identifier, 'headers' => {'Authorization' => @header['token'] } }
+      elsif @header['cookie']
+        uri = {'uri' => identifier, 'headers' => {'cookie' => @header['cookie'] } }
       else
         uri = {'uri' => identifier }
       end
