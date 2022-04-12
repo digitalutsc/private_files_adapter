@@ -97,10 +97,7 @@ class CustomDelegate
   MAX_UNAUTHORIZED_R = Rational(1, 2)
 
   def authorize(options = {})
-      logger = Java::edu.illinois.library.cantaloupe.script.Logger
-     @header = context['request_headers']
-
-
+      #logger = Java::edu.illinois.library.cantaloupe.script.Logger
      header = context['request_headers']
                        .select{ |name, value| name.downcase == 'authorization' }
                        .values.first
@@ -129,9 +126,6 @@ class CustomDelegate
                 'scale_denominator' => MAX_UNAUTHORIZED_R.denominator
             }
           else
-            logger.info "1~~~~~~~~~~~~~~~~~~~~~~~~~~`"
-            logger.info 'authorize'
-            logger.info "2~~~~~~~~~~~~~~~~~~~~~~~~~~`"
             return true
           end
       end
@@ -224,23 +218,21 @@ class CustomDelegate
       identifier = context['identifier']
       @header = context['request_headers']
 
-      logger = Java::edu.illinois.library.cantaloupe.script.Logger
+      #logger = Java::edu.illinois.library.cantaloupe.script.Logger
       #logger.info 'httpsource_resource_info'
       #logger.info identifier
       #logger.info @header
-      logger.info "1========================================="
-      logger.info @header['host']
-      logger.info @header['token']
-      logger.info @header['cookie']
-      logger.info "2========================================="
+      #logger.info "1========================================="
+      #logger.info @header['host']
+      #logger.info @header['token']
+      #logger.info @header['cookie']
+      #logger.info "2========================================="
       #logger.info @token
 
       if @header['token']
-        uri = {'uri' => identifier, 'headers' => {'Authorization' => @header['token'] } }
-      elsif @header['cookie']
-        uri = {'uri' => identifier, 'headers' => {'cookie' => @header['cookie'] } }
+        uri = {'uri' => identifier, 'headers' => {'Authorization' => @header['token'], 'cookie' => @header['cookie'] } }
       else
-        uri = {'uri' => identifier }
+        uri = {'uri' => identifier, 'headers' => {'cookie' => @header['cookie'] } }
       end
       return uri
   end
