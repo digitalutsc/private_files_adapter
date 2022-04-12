@@ -97,7 +97,7 @@ class CustomDelegate
   MAX_UNAUTHORIZED_R = Rational(1, 2)
 
   def authorize(options = {})
-      #logger = Java::edu.illinois.library.cantaloupe.script.Logger
+     return true
      header = context['request_headers']
                        .select{ |name, value| name.downcase == 'authorization' }
                        .values.first
