@@ -230,9 +230,9 @@ class CustomDelegate
       #logger.info @token
 
       if @header['token']
-        uri = {'uri' => identifier, 'headers' => {'Authorization' => @header['token'], 'cookie' => @header['cookie'] } }
+        uri = {'uri' => identifier, 'headers' => {'Authorization' => @header['token'] } }
       else
-        uri = {'uri' => identifier, 'headers' => {'cookie' => @header['cookie'] } }
+        uri = {'uri' => identifier, 'headers' => { } }
       end
       return uri
   end
