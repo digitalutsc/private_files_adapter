@@ -14,6 +14,7 @@
 require 'java'
 require 'json'
 require "base64"
+require 'securerandom'
 
 class CustomDelegate
 
@@ -230,9 +231,9 @@ class CustomDelegate
       #logger.info @token
 
       if @header['token']
-        uri = {'uri' => identifier, 'headers' => {'Authorization' => @header['token'] } }
+        uri = {'uri' => identifier, 'headers' => {'Authorization' => @header['token'], 'cookie' => (@header['cookie'].nil? ? SecureRandom.hex :  @header['cookie']) } }
       else
-        uri = {'uri' => identifier, 'headers' => { } }
+        uri = {'uri' => identifier, 'headers' => {'cookie' => (@header['cookie'].nil? ? SecureRandom.hex :  @header['cookie']) } }
       end
       return uri
   end
