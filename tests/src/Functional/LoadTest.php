@@ -20,6 +20,15 @@ class LoadTest extends BrowserTestBase {
   public static $modules = ['private_files_adapter'];
 
   /**
+   * The theme to install as the default for testing.
+   *
+   * Defaults to the install profile's default theme, if it specifies any.
+   *
+   * @var string
+   */
+  protected $defaultTheme = 'stable';
+
+  /**
    * A user with permission to administer site configuration.
    *
    * @var \Drupal\user\UserInterface

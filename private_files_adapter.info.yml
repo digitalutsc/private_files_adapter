@@ -7,4 +7,7 @@ dependencies:
   - jwt
   - jwt_auth_issuer
   - jwt_auth_consumer
+  - group
+  - groupmedia
+  - group_permissions
 
