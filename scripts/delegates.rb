@@ -11,11 +11,6 @@
 # versions. Likewise, earlier versions of the script are not compatible with
 # Cantaloupe 4.
 #
-require 'java'
-require 'json'
-require "base64"
-require 'securerandom'
-
 class CustomDelegate
 
   ##
@@ -89,54 +84,10 @@ class CustomDelegate
   # @param options [Hash] Empty hash.
   # @return [Boolean,Hash<String,Object>] See above.
   #
-  #def authorize(options = {})
-  #  #logger = Java::edu.illinois.library.cantaloupe.script.Logger
-  #  #@cookies = context['cookies']
-  #  true
-  #end
-  # The maximum scale allowed to unauthorized clients.
-  MAX_UNAUTHORIZED_R = Rational(1, 2)
-
   def authorize(options = {})
-     return true
-     header = context['request_headers']
-                       .select{ |name, value| name.downcase == 'authorization' }
-                       .values.first
-
-      if header&.start_with?('Bearer ')
-        token = header[7..header.length]
-          # Get the current scale constraint fraction, which ultimately comes
-          # from the identifier URI path component, which is conveniently
-          # made available for you in the delegate script context.
-          # This is a two-element array of numerator and denominator integers.
-          scale_constraint = context['scale_constraint']
-
-          # If it exists, convert it to a Rational (Ruby fraction).
-          # Otherwise, use 1/1.
-          scale_constraint_r = scale_constraint ?
-              Rational(*scale_constraint) : Rational(1)
-
-
-
-          # If the requested scale constraint is larger than authorized,
-          # redirect to the authorized scale constraint.
-          if scale_constraint_r > MAX_UNAUTHORIZED_R
-            return {
-                'status_code' => 302,
-                'scale_numerator' => MAX_UNAUTHORIZED_R.numerator,
-                'scale_denominator' => MAX_UNAUTHORIZED_R.denominator
-            }
-          else
-            return true
-          end
-      end
-      return true
+     true
   end
 
-
-  def valid?(token)
-      # check whether the token is valid and return true or false
-  end
   ##
   # Used to add additional keys to an information JSON response. See the
   # [Image API specification](http://iiif.io/api/image/2.1/#image-information).
@@ -195,8 +146,6 @@ class CustomDelegate
   def filesystemsource_pathname(options = {})
   end
 
-
-
   ##
   # Returns one of the following:
   #
@@ -214,28 +163,8 @@ class CustomDelegate
   # @param options [Hash] Empty hash.
   # @return See above.
   #
-
   def httpsource_resource_info(options = {})
-      identifier = context['identifier']
-      @header = context['request_headers']
-
-      #logger = Java::edu.illinois.library.cantaloupe.script.Logger
-      #logger.info 'httpsource_resource_info'
-      #logger.info identifier
-      #logger.info @header
-      #logger.info "1========================================="
-      #logger.info @header['host']
-      #logger.info @header['token']
-      #logger.info @header['cookie']
-      #logger.info "2========================================="
-      #logger.info @token
-
-      if @header['token']
-        uri = {'uri' => identifier, 'headers' => {'Authorization' => @header['token'], 'cookie' => (@header['cookie'].nil? ? SecureRandom.hex :  @header['cookie']) } }
-      else
-        uri = {'uri' => identifier, 'headers' => {'cookie' => (@header['cookie'].nil? ? SecureRandom.hex :  @header['cookie']) } }
-      end
-      return uri
+    return { "uri" => context['identifier'], "headers" => { "Authorization" => context['request_headers']['authorization'] } }
   end
 
   ##
@@ -299,6 +228,7 @@ class CustomDelegate
   #         Return nil for no overlay.
   #
   def overlay(options = {})
+    puts "overlay"
   end
 
   ##
@@ -312,6 +242,7 @@ class CustomDelegate
   #         to be applied.
   #
   def redactions(options = {})
+    puts "redactions"
     []
   end
 
