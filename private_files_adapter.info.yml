@@ -2,7 +2,7 @@ name: 'Private Files Adapter'
 type: module
 description: 'This module overrides private access control'
 package: 'Custom'
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^8 || ^9 || ^10
 dependencies:
   - jwt
   - jwt_auth_issuer
