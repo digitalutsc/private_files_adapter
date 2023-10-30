@@ -70,7 +70,7 @@ function private_files_adapter_file_access(EntityInterface $entity, string $oper
         $media_id = array_keys(\Drupal::service('file.usage')->listUsage($entity)['file']['media'])[0];
         $media = Media::load($media_id);
 
-        /** @var \Drupal\group\Plugin\GroupContentEnablerManagerInterface $plugin_manager */
+        /** @var \Drupal\group\Plugin\Group\Relation\GroupRelationTypeManagerInterface $plugin_manager */
         $plugin_manager = \Drupal::service('group_relation_type.manager');
 
         $plugin_ids = $plugin_manager->getPluginIdsByEntityTypeAccess($media->getEntityTypeId());
