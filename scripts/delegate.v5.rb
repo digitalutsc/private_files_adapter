@@ -241,27 +241,40 @@ class CustomDelegate
   # @return See above.
   #
   def httpsource_resource_info(options = {})
-     identifier = context['identifier']
-     @header = context['request_headers']
+     # Initialize logger
+    identifier = context['identifier']
+    @header = context['request_headers']
 
-      #logger = Java::edu.illinois.library.cantaloupe.script.Logger
-      logger = Logger.new(STDOUT)
-      #logger.info 'httpsource_resource_info'
-      #logger.info identifier
-      #logger.info @header
-      logger.info "1========================================="
-      logger.info @header['host']
-      logger.info  @header['token']
-      logger.info @header['cookie']
-      logger.info "2========================================="
-      #logger.info @token
+    logger = Logger.new('error.log')
+    logger.level = Logger::ERROR
+    #logger.error "Headers: #{@header.inspect}"
+    #logger.error "1========================================="
+    #logger.error @header['host']
+    #logger.error @header['Token']
+    #logger.error @header['Cookie']
+    #logger.error context['request_headers']['Authorization']
+    #logger.error "2========================================="
+    #logger.error @token
 
-     if @header['token']
-        uri = {'uri' => identifier, 'headers' => {'Authorization' => @header['token'], 'cookie' => (@header['cookie'].nil? ? SecureRandom.hex :  @header['cookie']) } }
-      else
-        uri = {'uri' => identifier, 'headers' => {'cookie' => (@header['cookie'].nil? ? SecureRandom.hex :  @header['cookie']) } }
-      end
-      return uri
+    #uri = { "uri" => context['identifier'], "headers" => { "Authorization" => context['request_headers']['Authorization'] } }
+    #logger.error "Request URI: #{uri}"
+
+    # Check for Authorization header
+    auth_header = @header['Authorization']
+    if auth_header.nil?
+        logger.error "Authorization header is missing"
+    else
+        logger.error "Authorization header: #{auth_header}"
+    end
+
+    # Construct headers for the request
+    headers = { 'cookie' => @header['Cookie'] || SecureRandom.hex }
+    headers['Authorization'] = auth_header if auth_header
+
+    # Construct URI
+    uri = { 'uri' => identifier, 'headers' => headers }
+    logger.error "Request URI: #{uri}"
+    return uri
   end
 
   ##
