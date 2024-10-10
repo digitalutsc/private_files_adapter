@@ -245,8 +245,8 @@ class CustomDelegate
     identifier = context['identifier']
     @header = context['request_headers']
 
-    logger = Logger.new('error.log')
-    logger.level = Logger::ERROR
+    #logger = Logger.new('error.log')
+    #logger.level = Logger::ERROR
     #logger.error "Headers: #{@header.inspect}"
     #logger.error "1========================================="
     #logger.error @header['host']
@@ -256,24 +256,21 @@ class CustomDelegate
     #logger.error "2========================================="
     #logger.error @token
 
-    #uri = { "uri" => context['identifier'], "headers" => { "Authorization" => context['request_headers']['Authorization'] } }
-    #logger.error "Request URI: #{uri}"
-
     # Check for Authorization header
     auth_header = @header['Authorization']
     if auth_header.nil?
-        logger.error "Authorization header is missing"
+        #logger.error "Authorization header is missing"
     else
-        logger.error "Authorization header: #{auth_header}"
-    end
+        #logger.error "Authorization header: #{auth_header}"
 
-    # Construct headers for the request
-    headers = { 'cookie' => @header['Cookie'] || SecureRandom.hex }
-    headers['Authorization'] = auth_header if auth_header
+        # Construct headers for the request
+        headers = { 'cookie' => @header['Cookie'] || SecureRandom.hex }
+        headers['Authorization'] = auth_header if auth_header
+    end
 
     # Construct URI
     uri = { 'uri' => identifier, 'headers' => headers }
-    logger.error "Request URI: #{uri}"
+    #logger.error "Request URI: #{uri}"
     return uri
   end
 
