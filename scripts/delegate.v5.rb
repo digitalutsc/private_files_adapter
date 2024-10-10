@@ -263,10 +263,11 @@ class CustomDelegate
     else
         #logger.error "Authorization header: #{auth_header}"
 
-        # Construct headers for the request
-        headers = { 'cookie' => @header['Cookie'] || SecureRandom.hex }
-        headers['Authorization'] = auth_header if auth_header
     end
+
+    # Construct headers for the request
+    headers = { 'cookie' => @header['Cookie'] || SecureRandom.hex }
+    headers['Authorization'] = auth_header if auth_header
 
     # Construct URI
     uri = { 'uri' => identifier, 'headers' => headers }
