@@ -6,7 +6,6 @@ use Drupal\Core\Url;
 use Drupal\Tests\BrowserTestBase;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
-
 /**
  * Simple test to ensure that main page loads with module enabled.
 *
