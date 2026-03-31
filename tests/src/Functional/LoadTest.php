@@ -26,7 +26,7 @@ class LoadTest extends BrowserTestBase {
    *
    * @var string
    */
-  protected $defaultTheme = 'stable';
+  protected $defaultTheme = 'stark';
 
   /**
    * A user with permission to administer site configuration.
@@ -49,7 +49,7 @@ class LoadTest extends BrowserTestBase {
    */
   public function testLoad() {
     $this->drupalGet(Url::fromRoute('<front>'));
-    $this->assertSession()->statusMessageContains('200');
+    $this->assertSession()->statusCodeEquals(200);
   }
 
 }
