@@ -4,12 +4,15 @@ namespace Drupal\Tests\private_files_adapter\Functional;
 
 use Drupal\Core\Url;
 use Drupal\Tests\BrowserTestBase;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+
 
 /**
  * Simple test to ensure that main page loads with module enabled.
- *
- * @group private_files_adapter
- */
+*
+* @group private_files_adapter
+*/
+#[RunTestsInSeparateProcesses]
 class LoadTest extends BrowserTestBase {
 
   /**
